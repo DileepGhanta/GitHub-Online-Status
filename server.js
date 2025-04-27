@@ -25,7 +25,7 @@ app.get('/ping', (req, res) => {
 
 // 2) Status-badge endpoint for Shields.io
 app.get('/status-badge', (req, res) => {
-  const status = isOnline() ? 'online' : 'offline';
+  const status = isOnline() ? 'Online' : 'Offline';
   const color  = isOnline() ? 'brightgreen' : 'red';
 
   res.json({
@@ -39,7 +39,7 @@ app.get('/status-badge', (req, res) => {
 
 // (Optional) Raw JSON status
 app.get('/status', (req, res) => {
-  res.json({ status: isOnline() ? 'online' : 'offline' });
+  res.json({ status: isOnline() ? 'Online' : 'Offline' });
 });
 
 app.get('/', (req, res) => {
