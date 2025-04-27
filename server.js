@@ -33,7 +33,8 @@ app.get('/status-badge', (req, res) => {
     label:         'Status',
     message:       status,
     color:         color,
-    cacheSeconds:  CACHE_SECONDS
+    cacheSeconds:  CACHE_SECONDS,
+    lastActive: lastActive
   });
 });
 
