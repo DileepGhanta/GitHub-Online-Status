@@ -30,7 +30,7 @@ app.get('/status-badge', (req, res) => {
 
   res.json({
     schemaVersion: 1,
-    label:         'GitHub Status',
+    label:         'Status',
     message:       status,
     color:         color,
     cacheSeconds:  CACHE_SECONDS
