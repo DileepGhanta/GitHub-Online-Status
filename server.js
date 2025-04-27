@@ -1,49 +1,48 @@
 // server.js
 const express = require('express');
-const cors = require('cors');
+const cors    = require('cors');
 
 const app = express();
 app.use(cors());
 
-let lastActive = 0;                    // start offline
-const THRESHOLD_MINUTES = 5;           // offline if >5m since last ping
-const CACHE_SECONDS     = 30;          // shields.io TTL
+let lastActive = 0;
+const THRESHOLD_MINUTES = 5;
+const CACHE_SECONDS     = 300;  // Shields minimum = 300s
 
-// Helper to decide online/offline
 function isOnline() {
-  const diffMin = (Date.now() - lastActive) / 60000;
-  return diffMin <= THRESHOLD_MINUTES;
+  return (Date.now() - lastActive) / 60000 <= THRESHOLD_MINUTES;
 }
 
-// 1) Ping endpoint — call this to mark “now” as active
+// ——— Ping endpoint returns 1×1 transparent GIF ———
 app.get('/ping', (req, res) => {
   lastActive = Date.now();
-  // no caching on ping
-  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.status(204).send();
+
+  // 1×1 transparent GIF
+  const gif = Buffer.from(
+    'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==',
+    'base64'
+  );
+  res.set({
+    'Content-Type':  'image/gif',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+  });
+  res.send(gif);
 });
 
-// 2) Status-badge endpoint for Shields.io
+// ——— Shields.io endpoint ———
 app.get('/status-badge', (req, res) => {
-  const status = isOnline() ? 'Online' : 'Offline';
-  const color  = isOnline() ? 'brightgreen' : 'red';
-
+  const online = isOnline();
   res.json({
     schemaVersion: 1,
     label:         'Status',
-    message:       status,
-    color:         color,
+    message:       online ? 'Online' : 'Offline',
+    color:         online ? 'brightgreen' : 'red',
     cacheSeconds:  CACHE_SECONDS,
   });
 });
 
-// (Optional) Raw JSON status
-app.get('/status', (req, res) => {
-  res.json({ status: isOnline() ? 'Online' : 'Offline' });
-});
-
 app.get('/', (req, res) => {
-  res.send('GitHub Status Server is running');
+  res.send('Status Server running');
 });
 
 module.exports = app;
