@@ -34,7 +34,6 @@ app.get('/status-badge', (req, res) => {
     message:       status,
     color:         color,
     cacheSeconds:  CACHE_SECONDS,
-    lastActive: lastActive
   });
 });
 
