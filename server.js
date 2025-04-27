@@ -6,27 +6,34 @@ app.use(cors());
 
 let lastActive = Date.now();
 
-// Endpoint to update your last activity
 app.get('/ping', (req, res) => {
   lastActive = Date.now();
   res.send('Pong');
 });
 
-// Endpoint to get current status
 app.get('/status', (req, res) => {
   const now = Date.now();
-  const diffMinutes = (now - lastActive) / 60000; // convert milliseconds to minutes
-  if (diffMinutes <= 5) {
-    res.json({ status: 'online' });
-  } else {
-    res.json({ status: 'offline' });
-  }
+  const diffMinutes = (now - lastActive) / 60000;
+  const status = diffMinutes <= 5 ? 'online' : 'offline';
+  res.json({ status });
 });
 
-// Default route
+// BADGE format
+app.get('/status-badge', (req, res) => {
+  const now = Date.now();
+  const diffMinutes = (now - lastActive) / 60000;
+  const status = diffMinutes <= 5 ? 'online' : 'offline';
+
+  res.json({
+    schemaVersion: 1,
+    label: "Status",
+    message: status,
+    color: status === "online" ? "brightgreen" : "red"
+  });
+});
+
 app.get('/', (req, res) => {
-  res.send('Status Server is running');
+  res.send('Status Server running');
 });
 
-// Listen on the Vercel provided port
 module.exports = app;
