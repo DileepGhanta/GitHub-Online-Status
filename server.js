@@ -7,17 +7,14 @@ app.use(cors());
 
 let lastActive = 0;
 const THRESHOLD_MINUTES = 5;
-const CACHE_SECONDS     = 300;  // Shields minimum = 300s
+const CACHE_SECONDS     = 300;
 
 function isOnline() {
   return (Date.now() - lastActive) / 60000 <= THRESHOLD_MINUTES;
 }
 
-// ——— Ping endpoint returns 1×1 transparent GIF ———
 app.get('/ping', (req, res) => {
-  lastActive = Date.now();
 
-  // 1×1 transparent GIF
   const gif = Buffer.from(
     'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==',
     'base64'
@@ -29,8 +26,8 @@ app.get('/ping', (req, res) => {
   res.send(gif);
 });
 
-// ——— Shields.io endpoint ———
 app.get('/status-badge', (req, res) => {
+    lastActive = Date.now();
   const online = isOnline();
   res.json({
     schemaVersion: 1,
